@@ -3,7 +3,7 @@ import './App.css'
 function App() {
   return (
     <>
-        <h1>Welcome to meridian stays</h1>
+        <h1 className='text-xl text-blue-400'>Welcome to meridian stays</h1>
     </>
   )
 }
