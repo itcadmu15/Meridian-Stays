@@ -1,11 +1,26 @@
-import './App.css'
+import React from "react";
+import Sidebar from "./components/common/SideBar";
 
 function App() {
   return (
-    <>
-        <h1 className='text-xl text-blue-400'>Welcome to meridian stays</h1>
-    </>
-  )
+    <div className="flex min-h-screen bg-[#faf7f8]">
+
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <main className="flex-1 p-8">
+        <h1 className="font-serif text-3xl text-[#54213f]">
+          Meridian Stays
+        </h1>
+
+        <p className="mt-2 text-gray-500">
+          Dashboard content goes here.
+        </p>
+      </main>
+
+    </div>
+  );
 }
 
-export default App
+export default App;
