@@ -1,34 +1,42 @@
-import React from "react";
-import Sidebar from "./components/common/SideBar";
-import TopNavbar from "./components/common/TopNavbar";
+import { Navigate, Route, Routes } from "react-router-dom";
+import AuthenticatedLayout from "./components/layout/AuthenticatedLayout";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import OwnerDashboard from "./pages/OwnerDashboard";
+import StaffDashboard from "./pages/StaffDashboard";
+import UnitListingsPage from "./pages/unit-listings/UnitListings";
+import AddUnitPage from "./pages/unit-listings/AddUnitPage";
+import EditUnitPage from "./pages/unit-listings/EditUnitPage";
+import UnitDetailsPage from "./pages/unit-listings/UnitDetailsPage";
+import GuestHomePage from "./pages/guests/GuestHomePage";
+import GuestUnitDetailsPage from "./pages/guests/GuestUnitDetailsPage";
+import GuestBookingPage from "./pages/guests/GuestBookingPage";
+import BookingConfirmationPage from "./pages/guests/BookingConfirmationPage";
+import GuestBookingsPage from "./pages/guests/GuestBookingsPage";
+import GuestProfilePage from "./pages/guests/GuestProfilePage";
 
 function App() {
   return (
-    <div className="flex h-screen bg-[#faf7f8]">
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Area */}
-      <div className="flex flex-1 flex-col">
-
-        {/* Top Navbar */}
-        <TopNavbar />
-
-        {/* Page Content */}
-        <main className="flex-1 p-8">
-          <h1 className="font-serif text-3xl text-[#54213f]">
-            Meridian Stays
-          </h1>
-
-          <p className="mt-2 text-gray-500">
-            Dashboard content goes here.
-          </p>
-        </main>
-
-      </div>
-
-    </div>
+      <Route element={<AuthenticatedLayout />}>
+        <Route path="/" element={<Navigate to="/unit-listings" replace />} />
+        <Route path="/dashboard" element={<OwnerDashboard />} />
+        <Route path="/staff" element={<StaffDashboard />} />
+        <Route path="/unit-listings" element={<UnitListingsPage />} />
+        <Route path="/unit-listings/new" element={<AddUnitPage />} />
+        <Route path="/unit-listings/:unitId" element={<UnitDetailsPage />} />
+        <Route path="/unit-listings/:unitId/edit" element={<EditUnitPage />} />
+        <Route path="/guest" element={<GuestHomePage />} />
+        <Route path="/guest/unit-listings/:unitId" element={<GuestUnitDetailsPage />} />
+        <Route path="/guest/book/:unitId" element={<GuestBookingPage />} />
+        <Route path="/guest/booking-confirmation" element={<BookingConfirmationPage />} />
+        <Route path="/guest/bookings" element={<GuestBookingsPage />} />
+        <Route path="/guest/profile" element={<GuestProfilePage />} />
+      </Route>
+    </Routes>
   );
 }
 

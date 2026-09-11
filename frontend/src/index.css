@@ -1,1 +1,68 @@
 @import "tailwindcss";
+
+@theme {
+  /* Approved Meridian Stays palette */
+  --color-plum-950: #36152c;
+  --color-plum-900: #4a1c38;
+  --color-plum-800: #54213f;
+  --color-plum-700: #6a2c51;
+  --color-plum-600: #713653;
+  --color-plum-500: #8b4a6b;
+  --color-rose-200: #f0c6ce;
+  --color-rose-300: #e8cbd6;
+  --color-rose-400: #d5a3b4;
+  --color-cream-50: #faf7f8;
+  --color-cream-100: #f7e1e3;
+  --color-cream-200: #eadfe4;
+
+  /* Elegant serif headings + Inter body */
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+:root {
+  color: #54213f;
+  background-color: #faf7f8;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #faf7f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}

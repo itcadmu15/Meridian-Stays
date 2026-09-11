@@ -1,17 +1,41 @@
-import React from "react";
 import {
   Search,
   Bell,
   ChevronDown,
+  Menu,
+  User,
 } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { formatDate } from "../../utils/format";
 
-const TopNavbar = () => {
+const TopNavbar = ({ onMenuClick }) => {
+  const location = useLocation();
+  const isGuestMode = location.pathname.startsWith("/guest");
+
   return (
-    <header className="h-[72px] border-b border-[#eadfe4] bg-[#fffdfd]">
-      <div className="flex h-full items-center justify-between px-7">
+    <header className="sticky top-0 z-30 h-[72px] shrink-0 border-b border-cream-200 bg-white">
+      <div className="flex h-full min-w-0 items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
+        {/* Mobile / tablet brand + menu (visible below lg) */}
+        <div className="flex min-w-0 items-center gap-3 lg:hidden">
+          <button
+            type="button"
+            aria-label="Open navigation menu"
+            onClick={onMenuClick}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cream-200 text-plum-800"
+          >
+            <Menu size={18} />
+          </button>
 
-        {/* Search Bar */}
-        <div className="relative w-[310px]">
+          <div className="min-w-0">
+            <p className="truncate font-serif text-base font-semibold text-plum-800">
+              Meridian Stays
+            </p>
+            <p className="text-[11px] text-slate-500">{formatDate(new Date())}</p>
+          </div>
+        </div>
+
+        {/* Search Bar (desktop) */}
+        <div className="relative hidden w-[310px] lg:block">
           <Search
             size={18}
             strokeWidth={1.7}
@@ -25,26 +49,27 @@ const TopNavbar = () => {
               h-[40px]
               w-full
               rounded-xl
-              bg-[#f4eef1]
+              bg-cream-50
               pl-11
               pr-4
               text-[13px]
-              text-[#54213f]
+              text-plum-800
               outline-none
               placeholder:text-[#a99ca3]
               focus:bg-white
               focus:ring-2
-              focus:ring-[#8b4a6b]/10
+              focus:ring-plum-500/10
             "
           />
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-6">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3 lg:gap-6">
 
           {/* Notification */}
           <button
             type="button"
+            aria-label="Notifications"
             className="
               relative
               flex
@@ -53,8 +78,8 @@ const TopNavbar = () => {
               items-center
               justify-center
               rounded-full
-              text-[#54213f]
-              hover:bg-[#f6eef2]
+              text-plum-800
+              hover:bg-cream-100
             "
           >
             <Bell
@@ -88,7 +113,7 @@ const TopNavbar = () => {
               rounded-lg
               px-2
               py-1.5
-              hover:bg-[#f8f2f4]
+              hover:bg-cream-50
             "
           >
 
@@ -101,23 +126,21 @@ const TopNavbar = () => {
                 items-center
                 justify-center
                 rounded-full
-                bg-[#ead4dc]
-                text-[#54213f]
+                bg-cream-100
+                text-plum-800
               "
             >
-              <span className="font-serif text-[15px] font-medium">
-                PS
-              </span>
+              {isGuestMode ? <User size={18} /> : <span className="font-serif text-[15px] font-medium">PS</span>}
             </div>
 
             {/* Name & Role */}
-            <div className="flex flex-col items-start">
-              <span className="text-[13px] font-semibold text-[#54213f]">
-                Priyam Sharma
+            <div className="hidden flex-col items-start sm:flex">
+              <span className="text-[13px] font-semibold text-plum-800">
+                {isGuestMode ? "Guest" : "Priyam Sharma"}
               </span>
 
               <span className="mt-1 text-[10px] text-[#96858e]">
-                Owner
+                {isGuestMode ? "Traveler" : "Owner"}
               </span>
             </div>
 
@@ -125,7 +148,7 @@ const TopNavbar = () => {
             <ChevronDown
               size={16}
               strokeWidth={1.7}
-              className="ml-1 text-[#54213f]"
+              className="ml-1 text-plum-800"
             />
 
           </button>

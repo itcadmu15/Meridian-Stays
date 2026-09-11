@@ -1,57 +1,69 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard,
-  UserRound,
-  House,
-  CalendarDays,
-  CreditCard,
   BarChart3,
-  Settings,
+  BedDouble,
+  CalendarDays,
   CircleHelp,
+  CreditCard,
+  Home,
+  House,
+  LayoutDashboard,
+  Settings,
+  User,
+  UserRound,
+  X,
 } from "lucide-react";
 
-const navigation = [
-  {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Owner Account",
-    path: "/owner/account",
-    icon: UserRound,
-  },
-  {
-    name: "My Properties",
-    path: "/owner/properties",
-    icon: House,
-  },
-  {
-    name: "Bookings",
-    path: "/owner/bookings",
-    icon: CalendarDays,
-  },
-  {
-    name: "Payouts",
-    path: "/owner/payouts",
-    icon: CreditCard,
-  },
-  {
-    name: "Reports",
-    path: "/owner/reports",
-    icon: BarChart3,
-  },
-  {
-    name: "Settings",
-    path: "/owner/settings",
-    icon: Settings,
-  },
+const ownerNavigation = [
+  { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+  { name: "Owner Account", path: "/owner/account", icon: UserRound },
+  { name: "My Properties", path: "/owner/properties", icon: House },
+  { name: "Unit Listings", path: "/unit-listings", icon: BedDouble },
+  { name: "Bookings", path: "/owner/bookings", icon: CalendarDays },
+  { name: "Payouts", path: "/owner/payouts", icon: CreditCard },
+  { name: "Reports", path: "/owner/reports", icon: BarChart3 },
+  { name: "Settings", path: "/owner/settings", icon: Settings },
 ];
 
-const Sidebar = () => {
+const guestNavigation = [
+  { name: "Home", path: "/guest", icon: Home },
+  { name: "Bookings", path: "/guest/bookings", icon: CalendarDays },
+  { name: "Profile", path: "/guest/profile", icon: User },
+];
+
+const Sidebar = ({ mobileOpen = false, onClose }) => {
+  const location = useLocation();
+  const isGuestMode = location.pathname.startsWith("/guest");
+  const navigation = isGuestMode ? guestNavigation : ownerNavigation;
+
   return (
-    <aside className="flex h-screen w-[280px] shrink-0 flex-col bg-gradient-to-b from-[#54213f] via-[#4a1c38] to-[#36152c] text-white">
+    <>
+      {mobileOpen ? (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+        />
+      ) : null}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-[280px] max-w-[85vw] shrink-0 flex-col overflow-y-auto bg-gradient-to-b from-plum-800 via-plum-900 to-plum-950 text-white transition-transform duration-200 lg:static lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+      >
+        <div className="flex items-center justify-between px-5 pt-5 lg:hidden">
+          <span className="font-serif text-sm font-semibold tracking-[0.3em] text-white">
+            MERIDIAN STAYS
+          </span>
+
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={onClose}
+            className="rounded-full p-2 text-white hover:bg-white/10"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
       {/* ================= LOGO ================= */}
       <div className="flex flex-col items-center px-6 pt-7 pb-9">
@@ -91,6 +103,7 @@ const Sidebar = () => {
               <NavLink
                 key={item.name}
                 to={item.path}
+                onClick={onClose}
                 className={({ isActive }) => `
                   group flex h-[52px] items-center gap-5
                   rounded-xl px-5
@@ -99,8 +112,8 @@ const Sidebar = () => {
 
                   ${
                     isActive
-                      ? "bg-[#8b4a6b] text-white shadow-sm"
-                      : "text-[#eadbe3] hover:bg-[#713653] hover:text-white"
+                      ? "bg-plum-500 text-white shadow-sm"
+                      : "text-rose-300 hover:bg-plum-600 hover:text-white"
                   }
                 `}
               >
@@ -114,7 +127,7 @@ const Sidebar = () => {
                         ${
                           isActive
                             ? "text-white"
-                            : "text-[#eadbe3] group-hover:text-white"
+                            : "text-rose-300 group-hover:text-white"
                         }
                       `}
                     />
@@ -169,17 +182,17 @@ const Sidebar = () => {
           <CircleHelp
             size={20}
             strokeWidth={1.6}
-            className="mt-0.5 shrink-0 text-[#e5cdd8]"
+            className="mt-0.5 shrink-0 text-rose-300"
           />
 
           <div>
 
-            <p className="text-[13px] font-medium text-[#eadbe3]">
+            <p className="text-[13px] font-medium text-rose-300">
               Need help?
             </p>
 
             <p className="mt-1 text-[11px] text-[#cfaebe]">
-              support@meridianstays.com
+              {isGuestMode ? "guest.support@meridianstays.com" : "support@meridianstays.com"}
             </p>
 
           </div>
@@ -188,7 +201,8 @@ const Sidebar = () => {
 
       </div>
 
-    </aside>
+      </aside>
+    </>
   );
 };
 

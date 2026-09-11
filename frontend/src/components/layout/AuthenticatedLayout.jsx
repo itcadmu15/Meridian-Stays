@@ -1,30 +1,26 @@
-import React from "react";
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import SideBar from "../common/SideBar";
+import TopNavbar from "../common/TopNavbar";
 
-const AuthenticatedLayout = ({ children }) => {
+const AuthenticatedLayout = () => {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
-    <div className="flex h-screen overflow-hidden bg-[#faf7f8]">
+    <div className="flex min-h-screen bg-cream-50 text-plum-800">
+      <SideBar
+        mobileOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+      />
 
-      {/* Sidebar */}
-      <SideBar />
-
-      {/* Right side */}
       <div className="flex min-w-0 flex-1 flex-col">
+        <TopNavbar onMenuClick={() => setMobileNavOpen(true)} />
 
-        {/* Top Navbar will go here */}
-        <header className="h-[64px] border-b border-[#eadfe4] bg-white">
-          <div className="flex h-full items-center justify-end px-6">
-            <span className="text-sm text-gray-600">
-              Welcome back
-            </span>
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 md:px-8 lg:px-10 lg:py-10">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
           </div>
-        </header>
-
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
-          {children}
         </main>
-
       </div>
     </div>
   );
