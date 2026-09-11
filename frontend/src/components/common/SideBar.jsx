@@ -51,31 +51,39 @@ const navigation = [
 
 const Sidebar = () => {
   return (
-    <aside className="flex h-screen w-[210px] flex-col bg-gradient-to-b from-[#54213f] via-[#4a1c38] to-[#36152c] text-white">
-      
-      {/* Logo */}
-      <div className="flex flex-col items-center px-5 pt-6 pb-8">
-        
-        {/* Simple flower logo */}
-        <div className="relative mb-2 h-10 w-16">
-          <div className="absolute left-7 top-0 h-7 w-4 rotate-[-8deg] rounded-[100%] bg-[#e7a9b6]" />
-          <div className="absolute left-3 top-3 h-6 w-4 rotate-[-45deg] rounded-[100%] bg-[#c9829b]" />
-          <div className="absolute right-3 top-3 h-6 w-4 rotate-[45deg] rounded-[100%] bg-[#d894a7]" />
-          <div className="absolute left-7 top-6 h-4 w-4 rounded-full bg-[#f0c6ce]" />
+    <aside className="flex h-screen w-[280px] shrink-0 flex-col bg-gradient-to-b from-[#54213f] via-[#4a1c38] to-[#36152c] text-white">
+
+      {/* ================= LOGO ================= */}
+      <div className="flex flex-col items-center px-6 pt-7 pb-9">
+
+        {/* Flower Logo */}
+        <div className="relative mb-3 h-14 w-20">
+
+          <div className="absolute left-9 top-0 h-9 w-5 rotate-[-8deg] rounded-[100%] bg-[#e7a9b6]" />
+
+          <div className="absolute left-3 top-5 h-8 w-5 rotate-[-45deg] rounded-[100%] bg-[#c9829b]" />
+
+          <div className="absolute right-3 top-5 h-8 w-5 rotate-[45deg] rounded-[100%] bg-[#d894a7]" />
+
+          <div className="absolute left-8 top-7 h-6 w-6 rounded-full bg-[#f0c6ce]" />
+
         </div>
 
-        <h1 className="font-serif text-[17px] tracking-[3px]">
+        <h1 className="font-serif text-[21px] font-medium tracking-[4px]">
           MERIDIAN STAYS
         </h1>
 
-        <p className="mt-1 text-[9px] tracking-wide text-[#e8cbd6]">
+        <p className="mt-2 text-[11px] tracking-wide text-[#e8cbd6]">
           Where Stays Feel Like Home
         </p>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3">
-        <div className="space-y-1">
+
+      {/* ================= NAVIGATION ================= */}
+      <nav className="flex-1 px-4">
+
+        <div className="space-y-2">
+
           {navigation.map((item) => {
             const Icon = item.icon;
 
@@ -83,28 +91,32 @@ const Sidebar = () => {
               <NavLink
                 key={item.name}
                 to={item.path}
-                className={({ isActive }) =>
-                  `
-                  group flex h-[38px] items-center gap-4 rounded-lg px-3
-                  text-[12px] transition-all duration-200
+                className={({ isActive }) => `
+                  group flex h-[52px] items-center gap-5
+                  rounded-xl px-5
+                  text-[16px] font-medium
+                  transition-all duration-200
+
                   ${
                     isActive
                       ? "bg-[#8b4a6b] text-white shadow-sm"
                       : "text-[#eadbe3] hover:bg-[#713653] hover:text-white"
                   }
-                  `
-                }
+                `}
               >
                 {({ isActive }) => (
                   <>
                     <Icon
-                      size={17}
+                      size={22}
                       strokeWidth={1.7}
-                      className={
-                        isActive
-                          ? "text-white"
-                          : "text-[#eadbe3] group-hover:text-white"
-                      }
+                      className={`
+                        shrink-0 transition-colors
+                        ${
+                          isActive
+                            ? "text-white"
+                            : "text-[#eadbe3] group-hover:text-white"
+                        }
+                      `}
                     />
 
                     <span>{item.name}</span>
@@ -113,18 +125,26 @@ const Sidebar = () => {
               </NavLink>
             );
           })}
+
         </div>
+
       </nav>
 
-      {/* Promotional Card */}
-      <div className="mx-3 mb-6 overflow-hidden rounded-lg bg-[#f7e1e3] text-[#54213f]">
-        <div className="relative flex min-h-[94px] items-center px-4 py-4">
-          
-          {/* Decorative leaf */}
-          <div className="absolute -left-1 bottom-0 h-16 w-9 rotate-[-15deg] rounded-[100%] bg-[#d5e1d8] opacity-90" />
 
-          <div className="relative z-10 ml-12">
-            <p className="font-serif text-[13px] leading-[1.3]">
+      {/* ================= PROMOTIONAL CARD ================= */}
+      <div className="mx-4 mb-7 overflow-hidden rounded-xl bg-[#f7e1e3] text-[#54213f]">
+
+        <div className="relative flex min-h-[120px] items-center px-5 py-5">
+
+          {/* Decorative Leaves */}
+          <div className="absolute bottom-0 left-1 h-20 w-10 rotate-[-15deg] rounded-[100%] bg-[#d5e1d8]" />
+
+          <div className="absolute bottom-2 left-7 h-16 w-7 rotate-[20deg] rounded-[100%] bg-[#c4d5c9]" />
+
+          {/* Text */}
+          <div className="relative z-10 ml-14">
+
+            <p className="font-serif text-[16px] font-medium leading-[1.35]">
               Grow
               <br />
               Your Hospitality
@@ -132,31 +152,42 @@ const Sidebar = () => {
               Journey with Us
             </p>
 
-            <div className="mt-2 h-[1px] w-8 bg-[#8b4a6b]" />
+            <div className="mt-3 h-[1px] w-10 bg-[#8b4a6b]" />
+
           </div>
+
         </div>
+
       </div>
 
-      {/* Help Section */}
-      <div className="px-5 pb-5">
-        <div className="flex items-start gap-3">
+
+      {/* ================= HELP SECTION ================= */}
+      <div className="border-t border-white/10 px-6 py-6">
+
+        <div className="flex items-start gap-4">
+
           <CircleHelp
-            size={15}
+            size={20}
             strokeWidth={1.6}
-            className="mt-0.5 text-[#e5cdd8]"
+            className="mt-0.5 shrink-0 text-[#e5cdd8]"
           />
 
           <div>
-            <p className="text-[10px] text-[#eadbe3]">
+
+            <p className="text-[13px] font-medium text-[#eadbe3]">
               Need help?
             </p>
 
-            <p className="mt-1 text-[9px] text-[#cfaebe]">
+            <p className="mt-1 text-[11px] text-[#cfaebe]">
               support@meridianstays.com
             </p>
+
           </div>
+
         </div>
+
       </div>
+
     </aside>
   );
 };
