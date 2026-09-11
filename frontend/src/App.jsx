@@ -1,23 +1,32 @@
 import React from "react";
 import Sidebar from "./components/common/SideBar";
+import TopNavbar from "./components/common/TopNavbar";
 
 function App() {
   return (
-    <div className="flex min-h-screen bg-[#faf7f8]">
+    <div className="flex h-screen bg-[#faf7f8]">
 
+      {/* Sidebar */}
       <Sidebar />
 
-      <main className="flex-1 p-8">
+      {/* Main Area */}
+      <div className="flex flex-1 flex-col">
 
-        <h1 className="font-serif text-3xl text-[#54213f]">
-          Meridian Stays
-        </h1>
+        {/* Top Navbar */}
+        <TopNavbar />
 
-        <p className="mt-2 text-gray-500">
-          Dashboard content goes here.
-        </p>
+        {/* Page Content */}
+        <main className="flex-1 p-8">
+          <h1 className="font-serif text-3xl text-[#54213f]">
+            Meridian Stays
+          </h1>
 
-      </main>
+          <p className="mt-2 text-gray-500">
+            Dashboard content goes here.
+          </p>
+        </main>
+
+      </div>
 
     </div>
   );
