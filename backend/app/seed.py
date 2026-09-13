@@ -19,7 +19,20 @@ def seed_if_empty() -> None:
         if db.query(models.Guest).count() > 0:
             return
 
+        # Create OwnerAccount first so the ID is available for the Property
+        owner = models.OwnerAccount(
+            name="Demo Owner",
+            email="owner@example.com",
+            phone="+1-555-0110",
+            payout_terms="monthly",
+            payout_percentage=80.00,
+            is_active=True,
+        )
+        db.add(owner)
+        db.flush()
+
         property_ = models.Property(
+            owner_id=owner.id,
             name="Demo Property",
             brand="Meridian Demo Brand",
             address="1 Harbor View Rd",

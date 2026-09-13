@@ -64,3 +64,28 @@ def count_overlapping_reservations(
         )
         .count()
     )
+
+
+def get_owner_account(db: Session, owner_id: str) -> models.OwnerAccount | None:
+    return db.query(models.OwnerAccount).filter(models.OwnerAccount.id == owner_id).first()
+
+def get_owner_by_email(db: Session, email: str) -> models.OwnerAccount | None:
+    return db.query(models.OwnerAccount).filter(models.OwnerAccount.email == email).first()
+
+def update_owner_account(
+    db: Session,
+    owner: models.OwnerAccount,
+    payload: schemas.OwnerAccountUpdate,
+) -> models.OwnerAccount:
+    data = payload.model_dump(exclude_unset=True)
+
+    for key, value in data.items():
+        setattr(owner, key, value)
+
+    db.add(owner)
+    db.commit()
+    db.refresh(owner)
+    return owner
+
+def get_owner_properties(db: Session, owner_id: str) -> list[models.Property]:
+    return db.query(models.Property).filter(models.Property.owner_id == owner_id).all()

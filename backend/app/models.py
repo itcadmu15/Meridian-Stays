@@ -13,7 +13,7 @@ import enum
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import JSON, Column, Date, DateTime, Enum, ForeignKey, Numeric, String
+from sqlalchemy import JSON, Column, Date, DateTime, Enum, ForeignKey, Numeric, String, Boolean
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -27,6 +27,37 @@ def utcnow() -> datetime:
     """datetime.utcnow() is deprecated (naive, silently non-UTC-labeled) — use this
     timezone-aware replacement for all "now" defaults in this module."""
     return datetime.now(UTC)
+
+
+class OwnerAccount(Base):
+    __tablename__ = "owner_accounts"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    name = Column(String(150), nullable=False)
+    email = Column(String(255), nullable=False, unique=True, index=True)
+    phone = Column(String(30), nullable=True)
+    payout_terms = Column(String(100), nullable=False)
+    payout_percentage = Column(Numeric(5, 2), nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
+    created_at = Column(DateTime, default=utcnow, nullable=False)
+    updated_at = Column(DateTime, default=utcnow, onupdate=utcnow, nullable=False)
+
+    properties = relationship("Property", back_populates="owner")
+
+
+class Property(Base):
+    __tablename__ = "properties"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+    name = Column(String, nullable=False)
+    brand = Column(String, nullable=False)
+    address = Column(String, nullable=True)
+    timezone = Column(String, nullable=False, default="UTC")
+    owner_id = Column(String(36), ForeignKey("owner_accounts.id"), nullable=True, index=True)
+
+    owner = relationship("OwnerAccount", back_populates="properties")
+    rate_plans = relationship("RatePlan", back_populates="property")
+    reservations = relationship("Reservation", back_populates="property")
 
 
 class ReservationStatus(enum.StrEnum):
@@ -53,19 +84,6 @@ class Guest(Base):
     created_at = Column(DateTime, default=utcnow, nullable=False)
 
     reservations = relationship("Reservation", back_populates="guest")
-
-
-class Property(Base):
-    __tablename__ = "properties"
-
-    id = Column(String(36), primary_key=True, default=gen_uuid)
-    name = Column(String, nullable=False)
-    brand = Column(String, nullable=False)
-    address = Column(String, nullable=True)
-    timezone = Column(String, nullable=False, default="UTC")
-
-    rate_plans = relationship("RatePlan", back_populates="property")
-    reservations = relationship("Reservation", back_populates="property")
 
 
 class RatePlan(Base):

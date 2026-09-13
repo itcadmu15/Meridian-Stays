@@ -105,3 +105,31 @@ class AvailabilitySlot(BaseModel):
     capacity: int
     booked: int
     available: bool
+
+# ---- Owner Account ----
+
+class OwnerAccountUpdate(BaseModel):
+    name: str | None = None
+    email: EmailStr | None = None
+    phone: str | None = None
+    payout_terms: str | None = None
+    payout_percentage: Decimal | None = None
+    is_active: bool | None = None
+
+
+class OwnerAccountOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    name: str
+    email: EmailStr
+    phone: str | None = None
+    payout_terms: str
+    payout_percentage: Decimal | None = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class OwnerAccountDetail(OwnerAccountOut):
+    properties: list[PropertyOut] = []
