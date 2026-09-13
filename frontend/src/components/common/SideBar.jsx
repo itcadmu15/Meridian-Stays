@@ -147,7 +147,7 @@ const Sidebar = ({ mobileOpen = false, onClose }) => {
       {/* ================= PROMOTIONAL CARD ================= */}
       <div className="mx-4 mb-7 overflow-hidden rounded-xl bg-[#f7e1e3] text-[#54213f]">
 
-        <div className="relative flex min-h-[120px] items-center px-5 py-5">
+       <div className="relative flex min-h-[120px] items-center px-5 py-5">
 
           {/* Decorative Leaves */}
           <div className="absolute bottom-0 left-1 h-20 w-10 rotate-[-15deg] rounded-[100%] bg-[#d5e1d8]" />

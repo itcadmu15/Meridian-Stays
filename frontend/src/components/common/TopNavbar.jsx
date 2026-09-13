@@ -1,27 +1,43 @@
 import {
-  Search,
   Bell,
   ChevronDown,
+  LogOut,
   Menu,
+  Search,
   User,
 } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { formatDate } from "../../utils/format";
 
 const TopNavbar = ({ onMenuClick }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const [profileOpen, setProfileOpen] = useState(false);
+
   const isGuestMode = location.pathname.startsWith("/guest");
+
+  const handleSignOut = () => {
+    setProfileOpen(false);
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    navigate("/login", { replace: true });
+  };
 
   return (
     <header className="sticky top-0 z-30 h-[72px] shrink-0 border-b border-cream-200 bg-white">
       <div className="flex h-full min-w-0 items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-        {/* Mobile / tablet brand + menu (visible below lg) */}
+
+        {/* Mobile / Tablet */}
         <div className="flex min-w-0 items-center gap-3 lg:hidden">
           <button
             type="button"
             aria-label="Open navigation menu"
             onClick={onMenuClick}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cream-200 text-plum-800"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cream-200 text-plum-800 hover:bg-cream-50"
           >
             <Menu size={18} />
           </button>
@@ -30,11 +46,14 @@ const TopNavbar = ({ onMenuClick }) => {
             <p className="truncate font-serif text-base font-semibold text-plum-800">
               Meridian Stays
             </p>
-            <p className="text-[11px] text-slate-500">{formatDate(new Date())}</p>
+
+            <p className="text-[11px] text-slate-500">
+              {formatDate(new Date())}
+            </p>
           </div>
         </div>
 
-        {/* Search Bar (desktop) */}
+        {/* Desktop Search */}
         <div className="relative hidden w-[310px] lg:block">
           <Search
             size={18}
@@ -45,21 +64,7 @@ const TopNavbar = ({ onMenuClick }) => {
           <input
             type="text"
             placeholder="Search anything..."
-            className="
-              h-[40px]
-              w-full
-              rounded-xl
-              bg-cream-50
-              pl-11
-              pr-4
-              text-[13px]
-              text-plum-800
-              outline-none
-              placeholder:text-[#a99ca3]
-              focus:bg-white
-              focus:ring-2
-              focus:ring-plum-500/10
-            "
+            className="h-[40px] w-full rounded-xl bg-cream-50 pl-11 pr-4 text-[13px] text-plum-800 outline-none placeholder:text-[#a99ca3] focus:bg-white focus:ring-2 focus:ring-plum-500/10"
           />
         </div>
 
@@ -70,89 +75,90 @@ const TopNavbar = ({ onMenuClick }) => {
           <button
             type="button"
             aria-label="Notifications"
-            className="
-              relative
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-full
-              text-plum-800
-              hover:bg-cream-100
-            "
+            className="relative flex h-10 w-10 items-center justify-center rounded-full text-plum-800 hover:bg-cream-100"
           >
-            <Bell
-              size={20}
-              strokeWidth={1.7}
-            />
+            <Bell size={20} strokeWidth={1.7} />
 
-            {/* Notification Dot */}
-            <span
-              className="
-                absolute
-                right-[9px]
-                top-[7px]
-                h-[7px]
-                w-[7px]
-                rounded-full
-                bg-[#b43d55]
-                ring-2
-                ring-white
-              "
-            />
+            <span className="absolute right-[9px] top-[7px] h-[7px] w-[7px] rounded-full bg-[#b43d55] ring-2 ring-white" />
           </button>
 
-          {/* User */}
-          <button
-            type="button"
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-lg
-              px-2
-              py-1.5
-              hover:bg-cream-50
-            "
-          >
+          {/* Profile */}
+          <div className="relative">
 
-            {/* Avatar */}
-            <div
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                bg-cream-100
-                text-plum-800
-              "
+            <button
+              type="button"
+              onClick={() => setProfileOpen((current) => !current)}
+              aria-expanded={profileOpen}
+              className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-cream-50"
             >
-              {isGuestMode ? <User size={18} /> : <span className="font-serif text-[15px] font-medium">PS</span>}
-            </div>
 
-            {/* Name & Role */}
-            <div className="hidden flex-col items-start sm:flex">
-              <span className="text-[13px] font-semibold text-plum-800">
-                {isGuestMode ? "Guest" : "Priyam Sharma"}
-              </span>
+              {/* Avatar */}
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cream-100 text-plum-800">
+                {isGuestMode ? (
+                  <User size={18} />
+                ) : (
+                  <span className="font-serif text-[15px] font-medium">
+                    PS
+                  </span>
+                )}
+              </div>
 
-              <span className="mt-1 text-[10px] text-[#96858e]">
-                {isGuestMode ? "Traveler" : "Owner"}
-              </span>
-            </div>
+              {/* Name */}
+              <div className="hidden flex-col items-start sm:flex">
+                <span className="text-[13px] font-semibold text-plum-800">
+                  {isGuestMode ? "Guest" : "Priyam Sharma"}
+                </span>
+
+                <span className="mt-1 text-[10px] text-[#96858e]">
+                  {isGuestMode ? "Traveler" : "Owner"}
+                </span>
+              </div>
+
+              <ChevronDown
+                size={16}
+                strokeWidth={1.7}
+                className={`ml-1 text-plum-800 transition-transform ${
+                  profileOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
             {/* Dropdown */}
-            <ChevronDown
-              size={16}
-              strokeWidth={1.7}
-              className="ml-1 text-plum-800"
-            />
+            {profileOpen && (
+              <div className="absolute right-0 top-12 z-[100] w-52 overflow-hidden rounded-2xl border border-cream-200 bg-white p-2 shadow-xl">
 
-          </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false);
 
+                    navigate(
+                      isGuestMode
+                        ? "/guest/profile"
+                        : "/owner/account"
+                    );
+                  }}
+                  className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-plum-800 hover:bg-cream-50"
+                >
+                  <User size={17} />
+                  <span>Profile</span>
+                </button>
+
+                <div className="my-1 h-px bg-cream-200" />
+
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-[#9b3048] hover:bg-[#fdf0f2]"
+                >
+                  <LogOut size={17} />
+                  <span>Sign out</span>
+                </button>
+
+              </div>
+            )}
+
+          </div>
         </div>
 
       </div>
