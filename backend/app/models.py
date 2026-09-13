@@ -13,8 +13,9 @@ import enum
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import JSON, Column, Date, DateTime, Enum, ForeignKey, Numeric, String
+from sqlalchemy import JSON, Column, Date, DateTime, Enum, ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import relationship
+
 
 from app.database import Base
 
@@ -119,3 +120,65 @@ class Order(Base):
     items = Column(JSON, nullable=False, default=list)  # [{ "name", "qty", "price" }, ...]
     total = Column(Numeric(10, 2), nullable=False, default=0)
     placed_at = Column(DateTime, default=utcnow, nullable=False)
+
+class UnitListing(Base):
+    __tablename__ = "unit_listings"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+
+    property_id = Column(
+        String(36),
+        ForeignKey("properties.id"),
+        nullable=True,
+    )
+
+    name = Column(String(150), nullable=False)
+    description = Column(Text, nullable=True)
+    location = Column(String(255), nullable=True)
+
+    nightly_rate = Column(
+        Numeric(10, 2),
+        nullable=False,
+        default=0,
+    )
+
+    status = Column(
+        String(30),
+        nullable=False,
+        default="active",
+    )
+
+    amenities = Column(
+        JSON,
+        nullable=False,
+        default=list,
+    )
+
+    check_in_time = Column(
+        String(10),
+        nullable=True,
+    )
+
+    check_out_time = Column(
+        String(10),
+        nullable=True,
+    )
+
+    listing_documents = Column(
+        JSON,
+        nullable=False,
+        default=list,
+    )
+
+    created_at = Column(
+        DateTime,
+        nullable=False,
+        default=utcnow,
+    )
+
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=utcnow,
+        onupdate=utcnow,
+    )

@@ -6,7 +6,7 @@ from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models import FolioStatus, ReservationStatus
-
+from uuid import UUID
 # ---- Guest ----
 
 
@@ -105,3 +105,84 @@ class AvailabilitySlot(BaseModel):
     capacity: int
     booked: int
     available: bool
+
+
+
+from pydantic import BaseModel, Field, field_validator
+class UnitListingBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=150)
+    description: str | None = None
+    location: str | None = None
+
+    nightly_rate: Decimal = Field(..., ge=0)
+
+    status: str = Field(default="active")
+
+    amenities: list[str] = Field(default_factory=list)
+
+    check_in_time: str | None = None
+    check_out_time: str | None = None
+
+    listing_documents: list[dict] = Field(default_factory=list)
+
+    property_id: str | None = None
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, value: str) -> str:
+        allowed = {"active", "inactive", "draft"}
+
+        if value not in allowed:
+            raise ValueError(
+                f"status must be one of: {', '.join(sorted(allowed))}"
+            )
+
+        return value
+
+
+class UnitListingCreate(UnitListingBase):
+    pass
+
+
+class UnitListingUpdate(BaseModel):
+    name: str | None = Field(None, min_length=1, max_length=150)
+    description: str | None = None
+    location: str | None = None
+
+    nightly_rate: Decimal | None = Field(None, ge=0)
+
+    status: str | None = None
+
+    amenities: list[str] | None = None
+
+    check_in_time: str | None = None
+    check_out_time: str | None = None
+
+    listing_documents: list[dict] | None = None
+
+    property_id: UUID | None = None
+
+    @field_validator("status")
+    @classmethod
+    def validate_status(cls, value: str | None) -> str | None:
+        if value is None:
+            return value
+
+        allowed = {"active", "inactive", "draft"}
+
+        if value not in allowed:
+            raise ValueError(
+                f"status must be one of: {', '.join(sorted(allowed))}"
+            )
+
+        return value
+
+
+class UnitListingResponse(UnitListingBase):
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
