@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Sidebar from "./components/common/SideBar";
@@ -11,13 +11,8 @@ import Payouts from "./pages/Payouts";
 function Dashboard() {
   return (
     <div>
-      <h1 className="font-serif text-3xl text-[#54213f]">
-        Dashboard
-      </h1>
-
-      <p className="mt-2 text-gray-500">
-        Dashboard content goes here.
-      </p>
+      <h1 className="font-serif text-3xl text-[#54213f]">Dashboard</h1>
+      <p className="mt-2 text-gray-500">Dashboard content goes here.</p>
     </div>
   );
 }
@@ -25,9 +20,7 @@ function Dashboard() {
 function Bookings() {
   return (
     <div>
-      <h1 className="font-serif text-3xl text-[#54213f]">
-        Bookings
-      </h1>
+      <h1 className="font-serif text-3xl text-[#54213f]">Bookings</h1>
     </div>
   );
 }
@@ -35,9 +28,7 @@ function Bookings() {
 function Reports() {
   return (
     <div>
-      <h1 className="font-serif text-3xl text-[#54213f]">
-        Reports
-      </h1>
+      <h1 className="font-serif text-3xl text-[#54213f]">Reports</h1>
     </div>
   );
 }
@@ -45,81 +36,74 @@ function Reports() {
 function Settings() {
   return (
     <div>
-      <h1 className="font-serif text-3xl text-[#54213f]">
-        Settings
-      </h1>
+      <h1 className="font-serif text-3xl text-[#54213f]">Settings</h1>
     </div>
   );
 }
 
 function App() {
+  const [owner, setOwner] = useState({
+    name: "Priyam Sharma",
+    email: "priyam.sharma@example.com",
+    phone: "+91 98765 43210",
+    payout_terms: "Monthly",
+    payout_percentage: 80,
+    is_active: true,
+  });
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#faf7f8]">
-
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Area */}
       <div className="flex min-w-0 flex-1 flex-col">
+        {/* Pass owner to TopNavbar */}
+        <TopNavbar owner={owner} />
 
-        {/* Top Navbar */}
-        <TopNavbar />
-
-        {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-8">
           <Routes>
-
-            {/* Owner Account */}
             <Route
               path="/"
-              element={<OwnerAccount />}
+              element={
+                <OwnerAccount
+                  owner={owner}
+                  setOwner={setOwner}
+                />
+              }
             />
 
-            {/* Dashboard */}
-            <Route
-              path="/dashboard"
-              element={<Dashboard />}
-            />
+            <Route path="/dashboard" element={<Dashboard />} />
 
-            {/* My Properties */}
             <Route
               path="/owner/properties"
               element={<MyProperties />}
             />
 
-            {/* Bookings */}
             <Route
               path="/owner/bookings"
               element={<Bookings />}
             />
 
-            {/* Payouts */}
             <Route
               path="/owner/payouts"
               element={<Payouts />}
             />
 
-            {/* Reports */}
             <Route
               path="/owner/reports"
               element={<Reports />}
             />
 
-            {/* Settings */}
             <Route
               path="/owner/settings"
               element={<Settings />}
             />
 
-            {/* Unknown Route */}
             <Route
               path="*"
               element={<Navigate to="/" replace />}
             />
-
           </Routes>
         </main>
-
       </div>
     </div>
   );

@@ -1,140 +1,66 @@
 import React from "react";
 import {
-  Search,
   Bell,
   ChevronDown,
 } from "lucide-react";
 
-const TopNavbar = () => {
+function TopNavbar({ owner }) {
+  const initials = owner.name
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <header className="h-[72px] border-b border-[#eadfe4] bg-[#fffdfd]">
-      <div className="flex h-full items-center justify-between px-7">
+    <header className="flex h-20 shrink-0 items-center justify-between border-b border-[#eadde3] bg-white px-6">
+      
+      {/* Left side / Search */}
+      <div className="flex items-center">
+        {/* Keep your existing search bar here */}
+      </div>
 
-        {/* Search Bar */}
-        <div className="relative w-[310px]">
-          <Search
-            size={18}
-            strokeWidth={1.7}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9d8b95]"
-          />
+      {/* Right side */}
+      <div className="flex items-center gap-5">
 
-          <input
-            type="text"
-            placeholder="Search anything..."
-            className="
-              h-[40px]
-              w-full
-              rounded-xl
-              bg-[#f4eef1]
-              pl-11
-              pr-4
-              text-[13px]
-              text-[#54213f]
-              outline-none
-              placeholder:text-[#a99ca3]
-              focus:bg-white
-              focus:ring-2
-              focus:ring-[#8b4a6b]/10
-            "
+        {/* Notification */}
+        <button
+          type="button"
+          className="relative text-[#54213f] transition hover:text-[#681744]"
+        >
+          <Bell size={20} strokeWidth={1.7} />
+
+          <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-[#b73862]" />
+        </button>
+
+        {/* Owner */}
+        <div className="flex items-center gap-3">
+          
+          {/* Avatar */}
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f2dce6] text-sm font-medium text-[#713653]">
+            {initials}
+          </div>
+
+          {/* Name + Role */}
+          <div className="hidden sm:block">
+            <p className="text-sm font-semibold text-[#54213f]">
+              {owner.name}
+            </p>
+
+            <p className="text-[10px] text-gray-400">
+              Owner
+            </p>
+          </div>
+
+          <ChevronDown
+            size={16}
+            className="text-[#54213f]"
           />
         </div>
-
-        {/* Right Section */}
-        <div className="flex items-center gap-6">
-
-          {/* Notification */}
-          <button
-            type="button"
-            className="
-              relative
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-full
-              text-[#54213f]
-              hover:bg-[#f6eef2]
-            "
-          >
-            <Bell
-              size={20}
-              strokeWidth={1.7}
-            />
-
-            {/* Notification Dot */}
-            <span
-              className="
-                absolute
-                right-[9px]
-                top-[7px]
-                h-[7px]
-                w-[7px]
-                rounded-full
-                bg-[#b43d55]
-                ring-2
-                ring-white
-              "
-            />
-          </button>
-
-          {/* User */}
-          <button
-            type="button"
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-lg
-              px-2
-              py-1.5
-              hover:bg-[#f8f2f4]
-            "
-          >
-
-            {/* Avatar */}
-            <div
-              className="
-                flex
-                h-10
-                w-10
-                items-center
-                justify-center
-                rounded-full
-                bg-[#ead4dc]
-                text-[#54213f]
-              "
-            >
-              <span className="font-serif text-[15px] font-medium">
-                PS
-              </span>
-            </div>
-
-            {/* Name & Role */}
-            <div className="flex flex-col items-start">
-              <span className="text-[13px] font-semibold text-[#54213f]">
-                Priyam Sharma
-              </span>
-
-              <span className="mt-1 text-[10px] text-[#96858e]">
-                Owner
-              </span>
-            </div>
-
-            {/* Dropdown */}
-            <ChevronDown
-              size={16}
-              strokeWidth={1.7}
-              className="ml-1 text-[#54213f]"
-            />
-
-          </button>
-
-        </div>
-
       </div>
     </header>
   );
-};
+}
 
 export default TopNavbar;

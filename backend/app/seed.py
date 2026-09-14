@@ -5,7 +5,12 @@ Seeds a small set of demo data so the API is immediately testable after
 Run standalone with:  docker compose exec backend python -m app.seed
 """
 
+from pathlib import Path
+import sys
 from datetime import date, timedelta
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app import models
 from app.database import SessionLocal
@@ -16,7 +21,7 @@ from app.mongo import get_preferences_collection
 def seed_if_empty() -> None:
     db = SessionLocal()
     try:
-        if db.query(models.Guest).count() > 0:
+        if db.query(models.OwnerAccount).count() > 0:
             return
 
         # Create OwnerAccount first so the ID is available for the Property
