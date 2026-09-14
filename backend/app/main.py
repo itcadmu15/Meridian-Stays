@@ -5,7 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import Base, engine
-from app.routers import availability, folios, guests, reservations, unit_listings
+from app import models
+from app.routers import assistant, availability, folios, guests, reservations, unit_listings
 from app.seed import seed_if_empty
 
 
@@ -44,6 +45,7 @@ app.include_router(guests.router)
 app.include_router(folios.router)
 app.include_router(availability.router)
 app.include_router(unit_listings.router)
+app.include_router(assistant.router)
 
 
 @app.get("/health", tags=["health"])

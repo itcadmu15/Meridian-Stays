@@ -182,3 +182,69 @@ class UnitListing(Base):
         default=utcnow,
         onupdate=utcnow,
     )
+from pgvector.sqlalchemy import Vector
+
+
+class RagDocument(Base):
+    __tablename__ = "rag_documents"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+
+    property_id = Column(
+        String(36),
+        ForeignKey("properties.id"),
+        nullable=False,
+    )
+
+    unit_listing_id = Column(
+        String(36),
+        ForeignKey("unit_listings.id"),
+        nullable=True,
+    )
+
+    title = Column(String(255), nullable=False)
+    document_type = Column(String(100), nullable=False)
+    content = Column(Text, nullable=False)
+
+    created_at = Column(
+        DateTime,
+        default=utcnow,
+        nullable=False,
+    )
+
+
+class RagChunk(Base):
+    __tablename__ = "rag_chunks"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+
+    document_id = Column(
+        String(36),
+        ForeignKey("rag_documents.id"),
+        nullable=False,
+    )
+
+    property_id = Column(
+        String(36),
+        ForeignKey("properties.id"),
+        nullable=False,
+    )
+
+    unit_listing_id = Column(
+        String(36),
+        ForeignKey("unit_listings.id"),
+        nullable=True,
+    )
+
+    content = Column(Text, nullable=False)
+
+    # OpenAI text-embedding-3-small produces 1536-dimensional vectors.
+    embedding = Column(Vector(1536), nullable=False)
+
+    created_at = Column(
+        DateTime,
+        default=utcnow,
+        nullable=False,
+    )
+
+
