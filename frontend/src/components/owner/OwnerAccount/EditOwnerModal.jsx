@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { updateOwnerAccount } from "../../../services/ownerService";
 
 function EditOwnerModal({ owner, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -12,17 +13,30 @@ function EditOwnerModal({ owner, onClose, onSave }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [apiError, setApiError] = useState("");
 
-  // Name: letters and spaces only
   const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
-
-  // Phone: exactly 10 digits
   const phoneRegex = /^[0-9]{10}$/;
+
+  useEffect(() => {
+    setFormData({
+      name: owner.name || "",
+      email: owner.email || "",
+      phone: owner.phone || "",
+      payout_terms: owner.payout_terms || "Monthly",
+      payout_percentage: owner.payout_percentage ?? 80,
+      is_active: owner.is_active ?? true,
+    });
+
+    setErrors({});
+    setApiError("");
+  }, [owner]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Phone number: allow digits only and maximum 10 digits
+    // Phone: digits only, maximum 10 digits
     if (name === "phone") {
       const onlyDigits = value.replace(/\D/g, "");
 
@@ -32,7 +46,6 @@ function EditOwnerModal({ owner, onClose, onSave }) {
           phone: onlyDigits,
         }));
 
-        // Clear phone error while typing
         setErrors((prev) => ({
           ...prev,
           phone: "",
@@ -47,11 +60,12 @@ function EditOwnerModal({ owner, onClose, onSave }) {
       [name]: value,
     }));
 
-    // Clear error for the field being edited
     setErrors((prev) => ({
       ...prev,
       [name]: "",
     }));
+
+    setApiError("");
   };
 
   const handleStatusChange = () => {
@@ -61,67 +75,118 @@ function EditOwnerModal({ owner, onClose, onSave }) {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const validateForm = () => {
+    const newErrors = {};
 
     const name = formData.name.trim();
     const phone = formData.phone.trim();
-    const payoutPercentage = Number(formData.payout_percentage);
-
-    const newErrors = {};
+    const payoutPercentage = Number(
+      formData.payout_percentage
+    );
 
     // Name validation
     if (!name) {
       newErrors.name = "Name is required.";
     } else if (!nameRegex.test(name)) {
-      newErrors.name = "Name should contain only letters and spaces.";
+      newErrors.name =
+        "Name should contain only letters and spaces.";
     }
 
     // Phone validation
     if (!phone) {
       newErrors.phone = "Phone number is required.";
     } else if (!phoneRegex.test(phone)) {
-      newErrors.phone = "Phone number must contain exactly 10 digits.";
+      newErrors.phone =
+        "Phone number must contain exactly 10 digits.";
     }
 
     // Payout percentage validation
-    if (
-      formData.payout_percentage === "" ||
-      Number.isNaN(payoutPercentage)
+    if (formData.payout_percentage === "") {
+      newErrors.payout_percentage =
+        "Payout percentage is required.";
+    } else if (
+      Number.isNaN(payoutPercentage) ||
+      payoutPercentage < 0 ||
+      payoutPercentage > 100
     ) {
-      newErrors.payout_percentage = "Payout percentage is required.";
-    } else if (payoutPercentage < 0 || payoutPercentage > 100) {
       newErrors.payout_percentage =
         "Payout percentage must be between 0 and 100.";
     }
 
-    // Stop submission if there are validation errors
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setApiError("");
+
+    // Validate frontend fields first
+    if (!validateForm()) {
       return;
     }
 
-    const updatedOwner = {
-      ...formData,
-      name,
-      phone,
-      payout_percentage: payoutPercentage,
-    };
+    try {
+      setSaving(true);
 
-    // Frontend only — sends updated data back to ProfileCard
-    onSave(updatedOwner);
+      /*
+       * Send the updated owner data to the service.
+       *
+       * The service handles:
+       * - API URL
+       * - PATCH request
+       * - Payload creation
+       * - JSON conversion
+       * - Backend error handling
+       */
+      const updatedOwner = await updateOwnerAccount(
+        owner.id,
+        {
+          name: formData.name.trim(),
+          email: formData.email,
+          phone: formData.phone.trim(),
+          payout_terms: formData.payout_terms,
+          payout_percentage: Number(
+            formData.payout_percentage
+          ),
+          is_active: formData.is_active,
+        }
+      );
+
+      /*
+       * Backend returns the updated owner.
+       * Send that response back to ProfileCard.
+       */
+      onSave(updatedOwner);
+
+    } catch (error) {
+      console.error(
+        "Error updating owner account:",
+        error
+      );
+
+      setApiError(
+        error.message ||
+          "Something went wrong while saving."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#eadde3] px-6 py-4">
           <div>
             <h2 className="font-serif text-2xl font-semibold text-[#54213f]">
               Edit Owner Profile
             </h2>
+
             <p className="mt-1 text-xs text-gray-500">
               Update your profile and payout preferences.
             </p>
@@ -130,14 +195,27 @@ function EditOwnerModal({ owner, onClose, onSave }) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            disabled={saving}
+            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 px-6 py-6"
+        >
+
+          {/* API Error */}
+          {apiError && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+              <p className="text-xs text-red-600">
+                {apiError}
+              </p>
+            </div>
+          )}
 
           {/* Name */}
           <div>
@@ -236,9 +314,17 @@ function EditOwnerModal({ owner, onClose, onSave }) {
               onChange={handleChange}
               className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-[#eadde3]"
             >
-              <option value="Monthly">Monthly</option>
-              <option value="Quarterly">Quarterly</option>
-              <option value="Yearly">Yearly</option>
+              <option value="Monthly">
+                Monthly
+              </option>
+
+              <option value="Quarterly">
+                Quarterly
+              </option>
+
+              <option value="Yearly">
+                Yearly
+              </option>
             </select>
           </div>
 
@@ -284,7 +370,7 @@ function EditOwnerModal({ owner, onClose, onSave }) {
             )}
           </div>
 
-          {/* Active Status */}
+          {/* Account Status */}
           <div className="flex items-center justify-between rounded-lg border border-[#eadde3] bg-[#faf7f8] px-4 py-3">
             <div>
               <p className="text-sm font-medium text-gray-700">
@@ -301,6 +387,7 @@ function EditOwnerModal({ owner, onClose, onSave }) {
             <button
               type="button"
               onClick={handleStatusChange}
+              disabled={saving}
               className={`relative h-6 w-11 rounded-full transition ${
                 formData.is_active
                   ? "bg-[#681744]"
@@ -319,20 +406,31 @@ function EditOwnerModal({ owner, onClose, onSave }) {
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 border-t border-[#eadde3] pt-5">
+
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-200 px-5 py-2.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50"
+              disabled={saving}
+              className="rounded-lg border border-gray-200 px-5 py-2.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="rounded-lg bg-[#681744] px-5 py-2.5 text-xs font-medium text-white transition hover:bg-[#54213f]"
+              disabled={saving}
+              className="flex min-w-[120px] items-center justify-center rounded-lg bg-[#681744] px-5 py-2.5 text-xs font-medium text-white transition hover:bg-[#54213f] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Save Changes
+              {saving ? (
+                <>
+                  <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </button>
+
           </div>
         </form>
       </div>
