@@ -18,16 +18,6 @@ const navigation = [
     icon: LayoutDashboard,
   },
   {
-    name: "My Properties",
-    path: "/owner/properties",
-    icon: House,
-  },
-  {
-    name: "Payouts",
-    path: "/owner/payouts",
-    icon: CreditCard,
-  },
-  {
     name: "Owner Account",
     path: "/",
     icon: UserRound,
