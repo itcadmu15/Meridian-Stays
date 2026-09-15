@@ -42,6 +42,12 @@ class FolioStatus(enum.StrEnum):
     settled = "settled"
     disputed = "disputed"
 
+class CleaningTaskStatus(enum.StrEnum):
+    scheduled = "scheduled"
+    in_progress = "in_progress"
+    completed = "completed"
+    cancelled = "cancelled"
+
 
 class Guest(Base):
     __tablename__ = "guests"
@@ -182,3 +188,55 @@ class UnitListing(Base):
         default=utcnow,
         onupdate=utcnow,
     )
+
+    cleaning_tasks = relationship("CleaningTask", back_populates="unit_listing")
+
+class CleaningTask(Base):
+    __tablename__ = "cleaning_tasks"
+
+    id = Column(String(36), primary_key=True, default=gen_uuid)
+
+    unit_id = Column(
+        String(36),
+        ForeignKey("unit_listings.id"),
+        nullable=False,
+        index=True,
+    )
+
+    turnover_start = Column(
+        DateTime,
+        nullable=False,
+        index=True,
+    )
+
+    turnover_end = Column(
+        DateTime,
+        nullable=False,
+    )
+
+    assigned_vendor = Column(
+        String(150),
+        nullable=True,
+    )
+
+    status = Column(
+        Enum(CleaningTaskStatus),
+        nullable=False,
+        default=CleaningTaskStatus.scheduled,
+        index=True,
+    )
+
+    created_at = Column(
+        DateTime,
+        nullable=False,
+        default=utcnow,
+    )
+
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=utcnow,
+        onupdate=utcnow,
+    )
+
+    unit_listing = relationship("UnitListing", back_populates="cleaning_tasks")

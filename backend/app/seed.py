@@ -36,6 +36,44 @@ def seed_if_empty() -> None:
         )
         db.add(rate_plan)
         db.flush()
+        unit_1 = models.UnitListing(
+            property_id=property_.id,
+            name="Serenity Villa",
+            description="A peaceful vacation villa with modern amenities.",
+            location="Coorg, Karnataka",
+            nightly_rate=420.00,
+            status="active",
+            amenities=["WiFi", "Pool", "Parking", "Kitchen"],
+            check_in_time="15:00",
+            check_out_time="11:00",
+        )
+
+        unit_2 = models.UnitListing(
+            property_id=property_.id,
+            name="Lakeside Retreat",
+            description="A scenic lakeside vacation rental.",
+            location="Udaipur, Rajasthan",
+            nightly_rate=350.00,
+            status="active",
+            amenities=["WiFi", "Lake View", "Parking", "Kitchen"],
+            check_in_time="15:00",
+            check_out_time="11:00",
+        )
+
+        unit_3 = models.UnitListing(
+            property_id=property_.id,
+            name="Urban Nest",
+            description="A comfortable city apartment for short stays.",
+            location="Bangalore, Karnataka",
+            nightly_rate=280.00,
+            status="active",
+            amenities=["WiFi", "AC", "Kitchen", "Workspace"],
+            check_in_time="14:00",
+            check_out_time="11:00",
+        )
+
+        db.add_all([unit_1, unit_2, unit_3])
+        db.flush()
 
         guest = models.Guest(
             name="Jamie Rivera",

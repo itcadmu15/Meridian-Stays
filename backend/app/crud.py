@@ -1,6 +1,9 @@
 """Plain DB access functions, kept separate from routers so they're easy to reuse
 (e.g. from the AI agent/RAG code teams build in Sprint 3) and to unit test."""
+from app.models import CleaningTask, CleaningTaskStatus, UnitListing
+from app.schemas import CleaningTaskCreate, CleaningTaskUpdate
 
+from datetime import datetime
 from datetime import date
 from uuid import UUID
 
@@ -157,3 +160,162 @@ def delete_unit_listing(
     db.commit()
 
     return db_listing
+
+
+def get_cleaning_task(db: Session, task_id: str):
+    return (
+        db.query(CleaningTask)
+        .filter(CleaningTask.id == task_id)
+        .first()
+    )
+
+
+def list_cleaning_tasks(
+    db: Session,
+    unit_id: str | None = None,
+    status: CleaningTaskStatus | None = None,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+):
+    query = db.query(CleaningTask)
+
+    if unit_id:
+        query = query.filter(CleaningTask.unit_id == unit_id)
+
+    if status:
+        query = query.filter(CleaningTask.status == status)
+
+    if date_from:
+        query = query.filter(CleaningTask.turnover_end >= date_from)
+
+    if date_to:
+        query = query.filter(CleaningTask.turnover_start <= date_to)
+
+    return query.order_by(CleaningTask.turnover_start.asc()).all()
+
+
+def cleaning_task_conflict(
+    db: Session,
+    unit_id: str,
+    turnover_start: datetime,
+    turnover_end: datetime,
+    exclude_task_id: str | None = None,
+):
+    query = db.query(CleaningTask).filter(
+        CleaningTask.unit_id == unit_id,
+        CleaningTask.status != CleaningTaskStatus.cancelled,
+        CleaningTask.turnover_start < turnover_end,
+        CleaningTask.turnover_end > turnover_start,
+    )
+
+    if exclude_task_id:
+        query = query.filter(CleaningTask.id != exclude_task_id)
+
+    return query.first()
+
+
+def create_cleaning_task(
+    db: Session,
+    task: CleaningTaskCreate,
+):
+    unit = (
+        db.query(UnitListing)
+        .filter(UnitListing.id == task.unit_id)
+        .first()
+    )
+
+    if not unit:
+        raise ValueError("Unit listing not found")
+
+    conflict = cleaning_task_conflict(
+        db,
+        task.unit_id,
+        task.turnover_start,
+        task.turnover_end,
+    )
+
+    if conflict:
+        raise ValueError("Cleaning task conflicts with an existing task")
+
+    db_task = CleaningTask(
+        unit_id=task.unit_id,
+        turnover_start=task.turnover_start,
+        turnover_end=task.turnover_end,
+        assigned_vendor=task.assigned_vendor,
+        status=task.status,
+    )
+
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+
+    return db_task
+
+
+def update_cleaning_task(
+    db: Session,
+    task_id: str,
+    task: CleaningTaskUpdate,
+):
+    db_task = get_cleaning_task(db, task_id)
+
+    if not db_task:
+        raise ValueError("Cleaning task not found")
+
+    data = task.model_dump(exclude_unset=True)
+
+    unit_id = data.get("unit_id", db_task.unit_id)
+    turnover_start = data.get(
+        "turnover_start",
+        db_task.turnover_start,
+    )
+    turnover_end = data.get(
+        "turnover_end",
+        db_task.turnover_end,
+    )
+
+    if turnover_end <= turnover_start:
+        raise ValueError("turnover_end must be after turnover_start")
+
+    unit = (
+        db.query(UnitListing)
+        .filter(UnitListing.id == unit_id)
+        .first()
+    )
+
+    if not unit:
+        raise ValueError("Unit listing not found")
+
+    conflict = cleaning_task_conflict(
+        db,
+        unit_id,
+        turnover_start,
+        turnover_end,
+        exclude_task_id=task_id,
+    )
+
+    if conflict:
+        raise ValueError("Cleaning task conflicts with an existing task")
+
+    for key, value in data.items():
+        setattr(db_task, key, value)
+
+    db.commit()
+    db.refresh(db_task)
+
+    return db_task
+
+
+def delete_cleaning_task(
+    db: Session,
+    task_id: str,
+):
+    db_task = get_cleaning_task(db, task_id)
+
+    if not db_task:
+        raise ValueError("Cleaning task not found")
+
+    db.delete(db_task)
+    db.commit()
+
+    return db_task

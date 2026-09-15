@@ -9,6 +9,7 @@ import {
   BarChart3,
   Settings,
   CircleHelp,
+  ClipboardList,
 } from "lucide-react";
 
 const navigation = [
@@ -46,6 +47,11 @@ const navigation = [
     name: "Settings",
     path: "/owner/settings",
     icon: Settings,
+  },
+  {
+    name: "Cleaning Schedule",
+    path: "/cleaning-schedule",
+    icon: ClipboardList,
   },
 ];
 

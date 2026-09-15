@@ -8,7 +8,7 @@ from app.database import Base, engine
 from app.routers import availability, folios, guests, reservations, unit_listings
 from app.seed import seed_if_empty
 
-
+from app.routers import cleaning_tasks
 
 
 @asynccontextmanager
@@ -44,6 +44,8 @@ app.include_router(guests.router)
 app.include_router(folios.router)
 app.include_router(availability.router)
 app.include_router(unit_listings.router)
+app.include_router(cleaning_tasks.router)
+
 
 
 @app.get("/health", tags=["health"])

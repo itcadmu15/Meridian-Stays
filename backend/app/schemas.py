@@ -1,8 +1,9 @@
 """Pydantic request/response schemas mirroring the Core Data Model and API contract."""
-
-from datetime import date, datetime
 from decimal import Decimal
-
+from datetime import datetime
+from datetime import date
+from pydantic import BaseModel, ConfigDict, field_validator
+from app.models import CleaningTaskStatus
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models import FolioStatus, ReservationStatus
@@ -186,3 +187,43 @@ class UnitListingResponse(UnitListingBase):
     model_config = {
         "from_attributes": True
     }
+
+
+
+
+
+class CleaningTaskCreate(BaseModel):
+    unit_id: str
+    turnover_start: datetime
+    turnover_end: datetime
+    assigned_vendor: str | None = None
+    status: CleaningTaskStatus = CleaningTaskStatus.scheduled
+
+    @field_validator("turnover_end")
+    @classmethod
+    def validate_turnover_window(cls, value, info):
+        start = info.data.get("turnover_start")
+        if start and value <= start:
+            raise ValueError("turnover_end must be after turnover_start")
+        return value
+
+
+class CleaningTaskUpdate(BaseModel):
+    unit_id: str | None = None
+    turnover_start: datetime | None = None
+    turnover_end: datetime | None = None
+    assigned_vendor: str | None = None
+    status: CleaningTaskStatus | None = None
+
+
+class CleaningTaskResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    unit_id: str
+    turnover_start: datetime
+    turnover_end: datetime
+    assigned_vendor: str | None
+    status: CleaningTaskStatus
+    created_at: datetime
+    updated_at: datetime
