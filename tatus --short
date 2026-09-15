@@ -1,0 +1,83 @@
+warning: in the working copy of 'backend/pyproject.toml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/uv.lock', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/App.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/common/ErrorMsg.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/common/Loading.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/common/SideBar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/common/TopNavbar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/guests/BookingCard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/guests/BookingSummary.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/guests/FeaturedPropertyCard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/guests/GuestSearchBar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/layout/AuthenticatedLayout.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/owner/UnitPerformance.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/unit-listings/UnitListingCard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/unit-listings/UnitListingDetails.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/unit-listings/UnitListingFilters.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/components/unit-listings/UnitListingForm.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/Login.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/OwnerDashboard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/Signup.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/StaffDashboard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/BookingConfirmationPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/GuestBookingPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/GuestBookingsPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/GuestHomePage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/GuestProfilePage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/guests/GuestUnitDetailsPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/unit-listings/AddUnitPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/unit-listings/EditUnitPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/unit-listings/UnitDetailsPage.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'frontend/src/pages/unit-listings/UnitListings.jsx', LF will be replaced by CRLF the next time Git touches it
+ backend/app/config.py                              |   5 [32m+[m
+ backend/app/crud.py                                |  25 [32m++[m
+ backend/app/main.py                                |   4 [32m+[m[31m-[m
+ backend/app/models.py                              |  68 [32m+++[m[31m-[m
+ backend/app/routers/guests.py                      |  16 [32m+[m[31m-[m
+ backend/pyproject.toml                             |   2 [32m+[m
+ backend/tests/factories.py                         |  16 [32m+[m
+ backend/tests/test_guests.py                       |  57 [32m+[m[31m--[m
+ backend/uv.lock                                    | 134 [32m+++++++[m
+ docker-compose.yml                                 |   2 [32m+[m[31m-[m
+ frontend/src/App.jsx                               |  42 [32m+[m[31m-[m
+ frontend/src/assets/a.txt                          |   0
+ frontend/src/components/common/ErrorMsg.jsx        |  77 [32m++[m[31m--[m
+ frontend/src/components/common/Loading.jsx         |  16 [32m+[m[31m-[m
+ frontend/src/components/common/SideBar.jsx         | 277 [32m++++++[m[31m-------[m
+ frontend/src/components/common/TopNavbar.jsx       | 227 [32m++++++++[m[31m---[m
+ frontend/src/components/guests/BookingCard.jsx     |  34 [32m+[m[31m-[m
+ frontend/src/components/guests/BookingSummary.jsx  |  56 [32m++[m[31m-[m
+ .../src/components/guests/FeaturedPropertyCard.jsx |  27 [32m+[m[31m-[m
+ frontend/src/components/guests/GuestSearchBar.jsx  |  85 [32m+++[m[31m-[m
+ .../src/components/layout/AuthenticatedLayout.jsx  |  31 [32m+[m[31m-[m
+ frontend/src/components/owner/OccupancyCard.jsx    |   0
+ frontend/src/components/owner/RevenueCard.jsx      |   0
+ frontend/src/components/owner/UnitPerformance.jsx  |  49 [32m+++[m
+ frontend/src/components/owner/UpcommingBooking.jsx |   0
+ frontend/src/components/staff/a.txt                |   0
+ .../components/unit-listings/UnitListingCard.jsx   |  31 [32m+[m[31m-[m
+ .../unit-listings/UnitListingDetails.jsx           | 196 [32m++++++[m[31m---[m
+ .../unit-listings/UnitListingFilters.jsx           |  52 [32m++[m[31m-[m
+ .../components/unit-listings/UnitListingForm.jsx   | 441 [32m+++++++++++++[m[31m--------[m
+ frontend/src/context/a.txt                         |   0
+ frontend/src/hooks/a.txt                           |   0
+ frontend/src/pages/Login.jsx                       | 183 [32m++++++++[m[31m-[m
+ frontend/src/pages/OwnerDashboard.jsx              | 259 [32m+++++++++++[m[31m-[m
+ frontend/src/pages/Signup.jsx                      |  30 [32m+[m[31m-[m
+ frontend/src/pages/StaffDashboard.jsx              | 192 [32m++++++++[m[31m-[m
+ .../src/pages/guests/BookingConfirmationPage.jsx   | 210 [32m+++++++++[m[31m-[m
+ frontend/src/pages/guests/GuestBookingPage.jsx     | 281 [32m++++++++++[m[31m---[m
+ frontend/src/pages/guests/GuestBookingsPage.jsx    | 179 [32m+++++++[m[31m--[m
+ frontend/src/pages/guests/GuestHomePage.jsx        | 170 [32m+++++[m[31m---[m
+ frontend/src/pages/guests/GuestProfilePage.jsx     | 165 [32m++++++[m[31m--[m
+ frontend/src/pages/guests/GuestUnitDetailsPage.jsx |  51 [32m++[m[31m-[m
+ frontend/src/pages/unit-listings/AddUnitPage.jsx   |  27 [32m+[m[31m-[m
+ frontend/src/pages/unit-listings/EditUnitPage.jsx  |  44 [32m+[m[31m-[m
+ .../src/pages/unit-listings/UnitDetailsPage.jsx    |  58 [32m++[m[31m-[m
+ frontend/src/pages/unit-listings/UnitListings.jsx  | 174 [32m++++++[m[31m--[m
+ frontend/src/routes/a.txt                          |   0
+ frontend/src/services/a.txt                        |   0
+ frontend/src/services/guestService.js              |  56 [32m++[m[31m-[m
+ frontend/src/utils/a.txt                           |   0
+ frontend/src/utils/format.js                       |  40 [32m+[m[31m-[m
+ 51 files changed, 3221 insertions(+), 868 deletions(-)

@@ -8,6 +8,11 @@ export function formatCurrency(value) {
   }).format(numericValue);
 }
 
+export function formatPercent(value, digits = 0) {
+  const numericValue = Number(value || 0);
+  return `${numericValue.toFixed(digits)}%`;
+}
+
 export function formatDate(value) {
   if (!value) return "—";
 
@@ -28,6 +33,25 @@ export function formatDateRange(start, end) {
   return `${formatDate(start)} - ${formatDate(end)}`;
 }
 
+export function toISODate(value) {
+  if (!value) return "";
+
+  if (typeof value === "string") return value.slice(0, 10);
+
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10);
+}
+
+export function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function tomorrowISO() {
+  return new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
 export function nightsBetween(start, end) {
   if (!start || !end) return 0;
 
@@ -37,5 +61,19 @@ export function nightsBetween(start, end) {
 
   if (Number.isNaN(diff) || diff <= 0) return 0;
 
-  return Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+  return Math.round(diff / (1000 * 60 * 60 * 24));
+}
+
+export function formatTime(value) {
+  if (!value) return "Flexible";
+
+  const match = /^(\d{1,2}):(\d{2})/.exec(String(value));
+  if (!match) return value;
+
+  const hours = Number(match[1]);
+  const minutes = match[2];
+  const suffix = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+
+  return `${displayHours}:${minutes} ${suffix}`;
 }

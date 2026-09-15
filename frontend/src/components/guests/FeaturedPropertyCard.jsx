@@ -18,6 +18,8 @@ function FeaturedPropertyCard({ listing, onClick }) {
       .reduce((total, char) => total + char.charCodeAt(0), 0)
   ) % cardImages.length;
 
+  const amenities = Array.isArray(listing?.amenities) ? listing.amenities : [];
+
   return (
     <button
       type="button"
@@ -39,24 +41,43 @@ function FeaturedPropertyCard({ listing, onClick }) {
           {formatCurrency(listing?.nightly_rate)}
           <span className="ml-1 text-[11px] font-normal text-slate-500">/ night</span>
         </span>
+
+        {listing?.status === "draft" ? (
+          <span className="absolute right-3 top-3 rounded-full bg-amber-50/95 px-3 py-1 text-xs font-medium text-amber-700 shadow-sm">
+            Coming soon
+          </span>
+        ) : null}
       </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col space-y-3 p-5">
         <div>
-          <h3 className="font-serif text-xl font-semibold leading-snug text-plum-800">
+          <h3 className="break-words font-serif text-xl font-semibold leading-snug text-plum-800">
             {listing?.name}
           </h3>
 
           <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
             <MapPin size={15} className="shrink-0 text-plum-500" />
-            <span className="truncate">{listing?.location || "Location not provided"}</span>
+            <span className="break-words">{listing?.location || "Location not provided"}</span>
           </div>
         </div>
 
         <p className="line-clamp-2 text-sm leading-6 text-slate-600">
           {listing?.description || "Beautiful hospitality space."}
         </p>
+
+        {amenities.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5">
+            {amenities.slice(0, 3).map((amenity) => (
+              <span
+                key={amenity}
+                className="rounded-full bg-cream-50 px-2.5 py-1 text-xs text-slate-600"
+              >
+                {amenity}
+              </span>
+            ))}
+          </div>
+        ) : null}
 
         <div className="mt-auto flex items-center justify-between border-t border-cream-100 pt-4">
           <span className="text-xs uppercase tracking-[0.2em] text-slate-400">

@@ -73,6 +73,22 @@ def make_folio(db_session, reservation, **overrides):
     return folio
 
 
+def make_unit_listing(db_session, **overrides):
+    defaults = dict(
+        name="Test Unit",
+        description="A comfortable test unit",
+        location="Ground Floor",
+        nightly_rate=150,
+        status="active",
+        amenities=["WiFi"],
+    )
+    defaults.update(overrides)
+    unit_listing = models.UnitListing(**defaults)
+    db_session.add(unit_listing)
+    db_session.flush()
+    return unit_listing
+
+
 def make_property_guest_plan(db_session):
     """The property + guest + rate plan trio most endpoint tests start from."""
     property_ = make_property(db_session)

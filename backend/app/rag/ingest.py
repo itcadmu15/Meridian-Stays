@@ -23,12 +23,36 @@ Check-out Time: {unit.check_out_time or "Not provided"}
 """.strip()
 
 
-def ingest_unit(unit, property_obj):
-    db = SessionLocal()
+def ingest_unit(unit, property_obj, db):
+    content = build_unit_knowledge(property_obj, unit)
 
-    try:
-        content = build_unit_knowledge(property_obj, unit)
+    # Find the existing RAG document for this unit
+    document = (
+        db.query(RagDocument)
+        .filter(
+            RagDocument.unit_listing_id == unit.id
+        )
+        .first()
+    )
 
+    if document:
+        # Update existing document
+        document.property_id = property_obj.id
+        document.title = f"{unit.name} Knowledge"
+        document.document_type = "unit_listing"
+        document.content = content
+
+        # Remove old chunks so they can be regenerated
+        db.query(RagChunk).filter(
+            RagChunk.document_id == document.id
+        ).delete(
+            synchronize_session=False
+        )
+
+        action = "Updated"
+
+    else:
+        # Create document only if it doesn't already exist
         document = RagDocument(
             property_id=property_obj.id,
             unit_listing_id=unit.id,
@@ -40,34 +64,29 @@ def ingest_unit(unit, property_obj):
         db.add(document)
         db.flush()
 
-        chunks = chunk_text(content)
+        action = "Created"
 
-        for chunk_content in chunks:
-            embedding = create_embedding(chunk_content)
+    chunks = chunk_text(content)
 
-            chunk = RagChunk(
-                document_id=document.id,
-                property_id=property_obj.id,
-                unit_listing_id=unit.id,
-                content=chunk_content,
-                embedding=embedding,
-            )
+    for chunk_content in chunks:
+        embedding = create_embedding(chunk_content)
 
-            db.add(chunk)
-
-        db.commit()
-
-        print(
-            f"Indexed: {unit.name} "
-            f"({len(chunks)} chunks)"
+        chunk = RagChunk(
+            document_id=document.id,
+            property_id=property_obj.id,
+            unit_listing_id=unit.id,
+            content=chunk_content,
+            embedding=embedding,
         )
 
-    except Exception:
-        db.rollback()
-        raise
+        db.add(chunk)
 
-    finally:
-        db.close()
+    db.commit()
+
+    print(
+        f"{action}: {unit.name} "
+        f"({len(chunks)} chunks)"
+    )
 
 
 def main():
@@ -101,7 +120,15 @@ def main():
                 )
                 continue
 
-            ingest_unit(unit, property_obj)
+            try:
+                ingest_unit(
+                    unit,
+                    property_obj,
+                    db,
+                )
+            except Exception:
+                db.rollback()
+                raise
 
     finally:
         db.close()

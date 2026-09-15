@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pymongo.collection import Collection
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,20 @@ from app.database import get_db
 from app.mongo import get_preferences_collection
 
 router = APIRouter(prefix="/api/v1/guests", tags=["guests"])
+
+
+@router.get("", response_model=list[schemas.GuestOut])
+def list_guests(
+    search: str | None = Query(
+        default=None,
+        description="Case-insensitive match on guest name or email",
+    ),
+    skip: int = 0,
+    limit: int = Query(default=100, le=100),
+    db: Session = Depends(get_db),
+):
+    """List guests (newest first), optionally filtered by name/email search."""
+    return crud.list_guests(db=db, search=search, skip=skip, limit=limit)
 
 
 @router.get("/{guest_id}", response_model=schemas.GuestDetail)

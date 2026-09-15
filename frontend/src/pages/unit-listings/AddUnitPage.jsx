@@ -13,20 +13,34 @@ function AddUnitPage() {
     setError("");
 
     try {
-      await createUnitListing(payload);
-      navigate("/unit-listings", { replace: true });
+      const created = await createUnitListing(payload);
+      navigate("/unit-listings", {
+        replace: true,
+        state: { flash: `Unit "${created?.name || "listing"}" was created successfully.` },
+      });
     } catch (submitError) {
       setError(submitError.message || "Unable to create unit listing.");
-    } finally {
       setLoading(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm text-slate-500">Unit Listings &gt; Add Unit</p>
-        <h1 className="font-serif text-4xl font-semibold text-plum-800">Add New Unit</h1>
+        <p className="text-sm text-slate-500">
+          <button
+            type="button"
+            onClick={() => navigate("/unit-listings")}
+            className="hover:text-plum-800"
+          >
+            Unit Listings
+          </button>{" "}
+          &gt; Add Unit
+        </p>
+        <h1 className="font-serif text-3xl font-semibold text-plum-800 md:text-4xl">
+          Add New Unit
+        </h1>
         <p className="text-sm text-slate-500">List your property and provide details.</p>
       </div>
 
@@ -35,6 +49,7 @@ function AddUnitPage() {
         loading={loading}
         error={error}
         onCancel={() => navigate("/unit-listings")}
+        backTo={() => navigate("/unit-listings")}
         onSubmit={handleSubmit}
       />
     </div>

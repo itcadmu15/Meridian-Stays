@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     default_property_capacity: int = 20
     cors_origins: list[str] = ["http://localhost:5173"]
 
+    # Sprint 3 RAG/agent feature: when set, the assistant endpoint synthesizes its
+    # answer with OpenAI over retrieved DB context; otherwise a template answer over
+    # the same context is returned (see app/routers/assistant.py).
+    openai_api_key: str | None = None
+
     # Set to true only by the test suite (see tests/conftest.py) to skip touching
     # the real Postgres/Mongo services during startup.
     testing: bool = False

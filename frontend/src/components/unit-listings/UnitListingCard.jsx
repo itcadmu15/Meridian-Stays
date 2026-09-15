@@ -1,4 +1,5 @@
 import { ArrowRight, Edit3, MapPin, Trash2 } from "lucide-react";
+import StatusBadge from "../common/StatusBadge";
 import { formatCurrency } from "../../utils/format";
 
 const cardImages = [
@@ -9,18 +10,6 @@ const cardImages = [
   "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80",
   "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80",
 ];
-
-function getStatusStyle(status) {
-  if (status === "inactive") {
-    return "bg-slate-100 text-slate-600";
-  }
-
-  if (status === "draft") {
-    return "bg-amber-50 text-amber-700";
-  }
-
-  return "bg-[#f7e1e3] text-[#54213f]";
-}
 
 function UnitListingCard({ listing, onView, onEdit, onDelete, deleting = false }) {
   const amenities = Array.isArray(listing?.amenities) ? listing.amenities : [];
@@ -45,9 +34,10 @@ function UnitListingCard({ listing, onView, onEdit, onDelete, deleting = false }
 
         <div className="absolute inset-0 bg-gradient-to-t from-plum-950/40 via-transparent to-transparent" />
 
-        <span className={`absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-medium shadow-sm ${getStatusStyle(listing?.status)}`}>
-          {listing?.status || "draft"}
-        </span>
+        <StatusBadge
+          status={listing?.status}
+          className="absolute left-4 top-4 shadow-sm"
+        />
 
         <span className="absolute bottom-3 left-4 rounded-full bg-white/95 px-3 py-1.5 text-sm font-semibold text-plum-800 shadow-sm">
           {formatCurrency(listing?.nightly_rate)}
@@ -57,7 +47,9 @@ function UnitListingCard({ listing, onView, onEdit, onDelete, deleting = false }
 
       <div className="flex flex-1 flex-col space-y-4 p-5">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-plum-800 sm:text-2xl">{listing?.name}</h3>
+          <h3 className="break-words font-serif text-xl font-semibold text-plum-800 sm:text-2xl">
+            {listing?.name}
+          </h3>
           <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
             <MapPin size={15} className="shrink-0 text-plum-500" />
             <span className="break-words">{listing?.location || "Location not provided"}</span>
@@ -71,7 +63,10 @@ function UnitListingCard({ listing, onView, onEdit, onDelete, deleting = false }
         {amenities.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {amenities.slice(0, 4).map((amenity) => (
-              <span key={amenity} className="rounded-full bg-cream-50 px-3 py-1.5 text-xs text-slate-600">
+              <span
+                key={amenity}
+                className="rounded-full bg-cream-50 px-3 py-1.5 text-xs text-slate-600"
+              >
                 {amenity}
               </span>
             ))}

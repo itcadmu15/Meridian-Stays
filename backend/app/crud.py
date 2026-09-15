@@ -4,6 +4,7 @@
 from datetime import date
 from uuid import UUID
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -47,6 +48,30 @@ def create_reservation(db: Session, payload: schemas.ReservationCreate) -> model
 
 def get_guest(db: Session, guest_id: str) -> models.Guest | None:
     return db.query(models.Guest).filter(models.Guest.id == guest_id).first()
+
+
+def list_guests(
+    db: Session,
+    search: str | None = None,
+    skip: int = 0,
+    limit: int = 100,
+):
+    """List guests newest-first, with an optional case-insensitive name/email search."""
+    query = db.query(models.Guest)
+
+    if search:
+        pattern = f"%{search}%"
+        query = query.filter(
+            or_(models.Guest.name.ilike(pattern), models.Guest.email.ilike(pattern))
+        )
+
+    return (
+        query
+        .order_by(models.Guest.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def get_folio(db: Session, folio_id: str) -> models.Folio | None:

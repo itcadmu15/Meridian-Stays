@@ -28,7 +28,7 @@ function EditUnitPage() {
   }, [unitId]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial data fetch
     loadListing();
   }, [loadListing]);
 
@@ -38,11 +38,14 @@ function EditUnitPage() {
 
     try {
       await updateUnitListing(unitId, payload);
-      navigate(`/unit-listings/${unitId}`);
+      navigate(`/unit-listings/${unitId}`, {
+        replace: true,
+        state: { flash: "Listing updated successfully." },
+      });
     } catch (submitError) {
       setError(submitError.message || "Unable to update unit listing.");
-    } finally {
       setSaving(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -51,23 +54,48 @@ function EditUnitPage() {
   }
 
   if (error && !listing) {
-    return <ErrorMsg title="Unable to load this listing." message={error} onRetry={loadListing} />;
+    return (
+      <ErrorMsg title="Unable to load this listing." message={error} onRetry={loadListing} />
+    );
   }
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm text-slate-500">Unit Listings &gt; Edit Unit</p>
-        <h1 className="font-serif text-4xl font-semibold text-plum-800">Edit Unit</h1>
-        <p className="text-sm text-slate-500">Update pricing, availability, and listing details.</p>
+        <p className="text-sm text-slate-500">
+          <button
+            type="button"
+            onClick={() => navigate("/unit-listings")}
+            className="hover:text-plum-800"
+          >
+            Unit Listings
+          </button>{" "}
+          &gt;{" "}
+          <button
+            type="button"
+            onClick={() => navigate(`/unit-listings/${unitId}`)}
+            className="hover:text-plum-800"
+          >
+            {listing?.name || "Unit"}
+          </button>{" "}
+          &gt; Edit
+        </p>
+        <h1 className="font-serif text-3xl font-semibold text-plum-800 md:text-4xl">
+          Edit Unit
+        </h1>
+        <p className="text-sm text-slate-500">
+          Update pricing, availability, and listing details.
+        </p>
       </div>
 
       <UnitListingForm
+        key={listing?.id || "listing"}
         initialValues={listing}
         submitLabel="Save Changes"
         loading={saving}
         error={error}
         onCancel={() => navigate(`/unit-listings/${unitId}`)}
+        backTo={() => navigate(`/unit-listings/${unitId}`)}
         onSubmit={handleSubmit}
       />
     </div>
